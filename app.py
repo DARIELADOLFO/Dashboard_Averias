@@ -256,28 +256,10 @@ else:
 
 st.markdown("---")
 
-# 4) Comparativa Producto: Cerradas vs Repetidas (gráfico agrupado)
-if col_producto:
-    df_prod = df_f.copy()
-    df_prod["__rep__"] = truthy_series(df_prod[col_repetida]) if col_repetida else False
-    # contar NUMERO_SOL únicos por producto y repetida
-    if col_num_sol:
-        gp = df_prod.groupby([col_producto, "__rep__"])[col_num_sol].nunique().unstack(fill_value=0).reset_index()
-    else:
-        gp = df_prod.groupby([col_producto, "__rep__"]).size().unstack(fill_value=0).reset_index()
-    # asegurar columnas
-    gp = gp.rename(columns={False: "Cerradas", True: "Repetidas"})
-    gp_m = gp.melt(id_vars=[col_producto], value_vars=["Cerradas", "Repetidas"], var_name="Tipo", value_name="Cantidad")
-    fig_prod = px.bar(gp_m.sort_values("Cantidad", ascending=False), x=col_producto, y="Cantidad", color="Tipo",
-                      title="Comparativa por Producto: Cerradas vs Repetidas", barmode="group",
-                      color_discrete_map={"Cerradas": PALETA["cerradas"], "Repetidas": PALETA["repetidas"]})
-    fig_prod.update_layout(height=420, xaxis_tickangle=-45, margin=dict(l=20,r=20,t=50,b=140))
-    st.plotly_chart(fig_prod, use_container_width=True)
-else:
-    st.info("No hay columna Producto Agrupado detectada para la comparativa por producto.")
 
 # ----------------------
 # Pie de página / nota ejecutiva
 # ----------------------
 st.markdown("---")
 st.caption("Lectura ejecutiva: prioriza top sectores y top productos donde se concentran las repetidas. KPI principal = % Repetitividad (Repetidas / Cerradas).")
+
